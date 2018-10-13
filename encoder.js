@@ -16,7 +16,7 @@ async function encryptStream(readStream, writeStream, key) {
       }
       writeStream.write(cipher.update(data));
     });
-    readStream.on("close", () => {
+    readStream.on("end", () => {
       writeStream.end(cipher.final(), function() {
         resolve();
       });

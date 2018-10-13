@@ -14,7 +14,7 @@ function decryptStream(readStream, writeStream, key) {
       }
       writeStream.write(decipher.update(data));
     });
-    readStream.on("close", () => {
+    readStream.on("end", () => {
       writeStream.end(decipher.final(), function() {
         resolve();
       });
