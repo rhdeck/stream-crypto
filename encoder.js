@@ -1,13 +1,10 @@
 const fs = require("fs");
 const crypto = require("crypto");
-let { key } = require("./keys.json");
 const { Readable, Writable } = require("stream");
 function makeIV() {
   return crypto.randomBytes(16);
 }
-key = Buffer.from(key, "base64");
-
-async function encryptStream(readStream, writeStream) {
+async function encryptStream(readStream, writeStream, key) {
   return new Promise((resolve, reject) => {
     const iv = makeIV();
     const cipher = crypto.createCipheriv("aes-256-ctr", key, iv);
@@ -29,7 +26,7 @@ async function encryptStream(readStream, writeStream) {
     });
   });
 }
-async function encryptText(text) {
+async function encryptText(text, key) {
   const readStream = new Readable();
   const writeStream = new Writable();
   readStream._read = () => {
@@ -42,13 +39,13 @@ async function encryptText(text) {
     done();
   };
 
-  await encryptStream(readStream, writeStream);
+  await encryptStream(readStream, writeStream, key);
   return Buffer.concat(buffers);
 }
-async function encryptFile(path, dest) {
+async function encryptFile(path, dest, key) {
   const readStream = fs.createReadStream(path);
   const writeStream = fs.createWriteStream(dest);
-  return await encryptStream(readStream, writeStream);
+  return await encryptStream(readStream, writeStream, key);
 }
 module.exports = {
   encryptText,

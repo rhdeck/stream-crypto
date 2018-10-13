@@ -1,9 +1,7 @@
 const fs = require("fs");
 const crypto = require("crypto");
 const { Readable, Writable } = require("stream");
-let { key } = require("./keys.json");
-key = Buffer.from(key, "base64");
-function decryptStream(readStream, writeStream) {
+function decryptStream(readStream, writeStream, key) {
   return new Promise((resolve, reject) => {
     const algorithm = "aes-256-ctr";
     let decipher;
@@ -26,12 +24,12 @@ function decryptStream(readStream, writeStream) {
     });
   });
 }
-async function decryptFile(path, dest) {
+async function decryptFile(path, dest, key) {
   const readStream = fs.createReadStream(path);
   const writeStream = fs.createWriteStream(dest);
-  return await decryptStream(readStream, writeStream);
+  return await decryptStream(readStream, writeStream, key);
 }
-async function decryptText(buffer) {
+async function decryptText(buffer, key, encoding = "utf8") {
   const readStream = new Readable();
   const writeStream = new Writable();
   readStream._read = () => {
@@ -43,8 +41,8 @@ async function decryptText(buffer) {
     buffers.push(chunk);
     done();
   };
-  await decryptStream(readStream, writeStream);
-  return Buffer.concat(buffers);
+  await decryptStream(readStream, writeStream, key);
+  return Buffer.concat(buffers).toString(encoding);
 }
 
 module.exports = {
