@@ -34,7 +34,7 @@ async function decryptText(buffer, key, encoding = "utf8") {
   let buffers = [];
   const readStream = dataToStream(buffer);
   const writeStream = makeWritableStream({
-    onWrite: () => {
+    onWrite: chunk => {
       buffers.push(chunk);
     }
   });

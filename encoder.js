@@ -31,7 +31,7 @@ async function encryptText(text, key) {
   let buffers = [];
   const readStream = dataToStream(text);
   const writeStream = makeWritableStream({
-    onWrite: () => {
+    onWrite: chunk => {
       buffers.push(chunk);
     }
   });
