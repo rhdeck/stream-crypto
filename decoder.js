@@ -1,6 +1,7 @@
 const fs = require("fs");
 const crypto = require("crypto");
 const { Readable, Writable } = require("stream");
+const { dataToStream, makeWritableStream } = require("./utils");
 function decryptStream(readStream, writeStream, key) {
   return new Promise((resolve, reject) => {
     const algorithm = "aes-256-ctr";
@@ -30,17 +31,13 @@ async function decryptFile(path, dest, key) {
   return await decryptStream(readStream, writeStream, key);
 }
 async function decryptText(buffer, key, encoding = "utf8") {
-  const readStream = new Readable();
-  const writeStream = new Writable();
-  readStream._read = () => {
-    readStream.destroy();
-  };
-  readStream.push(buffer);
   let buffers = [];
-  writeStream._write = (chunk, encoding, done) => {
-    buffers.push(chunk);
-    done();
-  };
+  const readStream = dataToStream(buffer);
+  const writeStream = makeWritableStream({
+    onWrite: () => {
+      buffers.push(chunk);
+    }
+  });
   await decryptStream(readStream, writeStream, key);
   return Buffer.concat(buffers).toString(encoding);
 }

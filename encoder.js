@@ -1,6 +1,7 @@
 const fs = require("fs");
 const crypto = require("crypto");
 const { Readable, Writable } = require("stream");
+const { dataToStream, makeWritableStream } = require("./utils");
 function makeIV() {
   return crypto.randomBytes(16);
 }
@@ -27,18 +28,13 @@ async function encryptStream(readStream, writeStream, key) {
   });
 }
 async function encryptText(text, key) {
-  const readStream = new Readable();
-  const writeStream = new Writable();
-  readStream._read = () => {
-    readStream.destroy();
-  };
-  readStream.push(text);
   let buffers = [];
-  writeStream._write = (chunk, encoding, done) => {
-    buffers.push(chunk);
-    done();
-  };
-
+  const readStream = dataToStream(text);
+  const writeStream = makeWritableStream({
+    onWrite: () => {
+      buffers.push(chunk);
+    }
+  });
   await encryptStream(readStream, writeStream, key);
   return Buffer.concat(buffers);
 }
