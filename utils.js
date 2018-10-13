@@ -13,6 +13,7 @@ function makeWritableStream({ onWrite }) {
     onWrite(chunk);
     done();
   };
+  return writeStream;
 }
 
 module.exports = {
