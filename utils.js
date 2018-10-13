@@ -15,7 +15,7 @@ function makeWritableStream({ onWrite }) {
   };
 }
 
-module.expots = {
-  textToStream,
+module.exports = {
+  dataToStream,
   makeWritableStream
 };
