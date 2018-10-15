@@ -16,6 +16,13 @@ function decryptStream(readStream, writeStream, key) {
       writeStream.write(decipher.update(data));
     });
     readStream.on("end", () => {
+      //close fires on node 8 but not node 10
+      writeStream.end(decipher.final(), function() {
+        resolve();
+      });
+    });
+    readStream.on("close", () => {
+      //close fires on node 10 but not node 8
       writeStream.end(decipher.final(), function() {
         resolve();
       });
@@ -41,8 +48,19 @@ async function decryptText(buffer, key, encoding = "utf8") {
   await decryptStream(readStream, writeStream, key);
   return Buffer.concat(buffers).toString(encoding);
 }
-
+async function decryptBuffer(buffer, key) {
+  let buffers = [];
+  const readStream = dataToStream(buffer);
+  const writeStream = makeWritableStream({
+    onWrite: chunk => {
+      buffers.push(chunk);
+    }
+  });
+  await decryptStream(readStream, writeStream, key);
+  return Buffer.concat(buffers);
+}
 module.exports = {
   decryptText,
-  decryptFile
+  decryptFile,
+  decryptBuffer
 };

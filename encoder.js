@@ -1,6 +1,5 @@
 const fs = require("fs");
 const crypto = require("crypto");
-const { Readable, Writable } = require("stream");
 const { dataToStream, makeWritableStream } = require("./utils");
 function makeIV() {
   return crypto.randomBytes(16);
@@ -18,6 +17,13 @@ async function encryptStream(readStream, writeStream, key) {
       writeStream.write(cipher.update(data));
     });
     readStream.on("end", () => {
+      //close fires on node 8 but not node 10
+      writeStream.end(cipher.final(), function() {
+        resolve();
+      });
+    });
+    readStream.on("close", () => {
+      //close fires on node 10 but not node 8
       writeStream.end(cipher.final(), function() {
         resolve();
       });
@@ -27,9 +33,9 @@ async function encryptStream(readStream, writeStream, key) {
     });
   });
 }
-async function encryptText(text, key) {
+async function encrypt(data, key) {
   let buffers = [];
-  const readStream = dataToStream(text);
+  const readStream = dataToStream(data);
   const writeStream = makeWritableStream({
     onWrite: chunk => {
       buffers.push(chunk);
@@ -43,7 +49,8 @@ async function encryptFile(path, dest, key) {
   const writeStream = fs.createWriteStream(dest);
   return await encryptStream(readStream, writeStream, key);
 }
+
 module.exports = {
-  encryptText,
+  encrypt,
   encryptFile
 };
