@@ -1,7 +1,7 @@
 {
   "name": "@raydeck/stream-crypto",
   "version": "1.0.0",
-  "private": true,
+  "private": false,
   "description": "",
   "main": "index.js",
   "scripts": {
