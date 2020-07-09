@@ -1,3 +1,3 @@
 import { encrypt, encryptFile } from "./encoder";
-import { decryptText, decryptBuffer, decryptFile } from "./decoder";
-export { encrypt, decryptText, decryptBuffer, encryptFile, decryptFile };
+import { decryptToText, decryptToBuffer, decryptFile } from "./decoder";
+export { encrypt, decryptToText, decryptToBuffer, encryptFile, decryptFile };
