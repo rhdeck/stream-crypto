@@ -1,4 +1,6 @@
 import { Readable, Writable } from "stream";
+import { randomBytes } from "crypto";
+import { promisify } from "util";
 function dataToStream(data: any) {
   const readStream = new Readable();
   readStream._read = () => {
@@ -15,4 +17,16 @@ function makeWritableStream({ onWrite }: { onWrite: (chunk: any) => void }) {
   };
   return writeStream;
 }
-export { dataToStream, makeWritableStream };
+async function makeRandomKeyBuffer(length = 32): Promise<Buffer> {
+  return promisify(randomBytes)(length);
+}
+async function makeRandomKeyString(length = 32): Promise<string> {
+  const buf = await makeRandomKeyBuffer(length);
+  return buf.toString("base64");
+}
+export {
+  dataToStream,
+  makeWritableStream,
+  makeRandomKeyString,
+  makeRandomKeyBuffer,
+};
