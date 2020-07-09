@@ -41,24 +41,9 @@ async function decryptFile(path: string, dest: string, key: crypto.CipherKey) {
   const writeStream = fs.createWriteStream(dest);
   return await decryptStream(readStream, writeStream, key);
 }
-async function decryptText(
-  buffer: Buffer,
-  key: crypto.CipherKey,
-  encoding: BufferEncoding = "utf8"
-) {
+async function decryptToBuffer(data: any, key: crypto.CipherKey) {
   let buffers: Buffer[] = [];
-  const readStream = dataToStream(buffer);
-  const writeStream = makeWritableStream({
-    onWrite: (chunk) => {
-      buffers.push(chunk);
-    },
-  });
-  await decryptStream(readStream, writeStream, key);
-  return Buffer.concat(buffers).toString(encoding);
-}
-async function decryptBuffer(buffer: Buffer, key: crypto.CipherKey) {
-  let buffers: Buffer[] = [];
-  const readStream = dataToStream(buffer);
+  const readStream = dataToStream(data);
   const writeStream = makeWritableStream({
     onWrite: (chunk) => {
       buffers.push(chunk);
@@ -67,4 +52,12 @@ async function decryptBuffer(buffer: Buffer, key: crypto.CipherKey) {
   await decryptStream(readStream, writeStream, key);
   return Buffer.concat(buffers);
 }
-export { decryptText, decryptFile, decryptBuffer };
+async function decryptToText(
+  data: any,
+  key: crypto.CipherKey,
+  encoding: BufferEncoding = "utf8"
+): Promise<string> {
+  const b = await decryptToBuffer(data, key);
+  return b.toString(encoding);
+}
+export { decryptToText, decryptFile, decryptToBuffer };
