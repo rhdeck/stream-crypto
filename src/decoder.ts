@@ -54,7 +54,7 @@ async function decryptToBuffer(data: Buffer | string, key: CryptoKey) {
   await decryptStream(readStream, writeStream, key);
   return Buffer.concat(buffers);
 }
-async function decryptToText(
+async function decryptToString(
   data: Buffer | string,
   key: CryptoKey,
   encoding: BufferEncoding = "utf8"
@@ -62,4 +62,4 @@ async function decryptToText(
   const b = await decryptToBuffer(data, key);
   return b.toString(encoding);
 }
-export { decryptToText, decryptFile, decryptToBuffer };
+export { decryptToString, decryptFile, decryptToBuffer };
