@@ -1,21 +1,21 @@
-import fs from "fs";
-import crypto from "crypto";
+import { createReadStream, createWriteStream } from "fs";
+import { createDecipheriv, Decipher, CipherKey } from "crypto";
 import { Readable, Writable } from "stream";
 import { dataToStream, makeWritableStream } from "./utils";
 function decryptStream(
   readStream: Readable,
   writeStream: Writable,
-  key: crypto.CipherKey
+  key: CipherKey
 ) {
   return new Promise((resolve, reject) => {
     const algorithm = "aes-256-ctr";
-    let decipher: crypto.Decipher | undefined;
+    let decipher: Decipher | undefined;
     let iv;
     readStream.on("data", (data) => {
       if (!decipher) {
         iv = data.slice(0, 16);
         data = data.slice(16);
-        decipher = crypto.createDecipheriv(algorithm, key, iv);
+        decipher = createDecipheriv(algorithm, key, iv);
       }
       writeStream.write(decipher.update(data));
     });
@@ -36,12 +36,12 @@ function decryptStream(
     });
   });
 }
-async function decryptFile(path: string, dest: string, key: crypto.CipherKey) {
-  const readStream = fs.createReadStream(path);
-  const writeStream = fs.createWriteStream(dest);
+async function decryptFile(path: string, dest: string, key: CipherKey) {
+  const readStream = createReadStream(path);
+  const writeStream = createWriteStream(dest);
   return await decryptStream(readStream, writeStream, key);
 }
-async function decryptToBuffer(data: any, key: crypto.CipherKey) {
+async function decryptToBuffer(data: any, key: CipherKey) {
   let buffers: Buffer[] = [];
   const readStream = dataToStream(data);
   const writeStream = makeWritableStream({
@@ -54,7 +54,7 @@ async function decryptToBuffer(data: any, key: crypto.CipherKey) {
 }
 async function decryptToText(
   data: any,
-  key: crypto.CipherKey,
+  key: CipherKey,
   encoding: BufferEncoding = "utf8"
 ): Promise<string> {
   const b = await decryptToBuffer(data, key);
