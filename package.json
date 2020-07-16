@@ -3,8 +3,8 @@
   "version": "2.0.7",
   "private": false,
   "description": "",
-  "main": "dest/index.js",
-  "types": "dest/types",
+  "main": "dist/index.js",
+  "types": "dist/types",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc ",
