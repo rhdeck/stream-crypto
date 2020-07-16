@@ -1,5 +1,5 @@
 import { createReadStream, createWriteStream } from "fs";
-import { randomBytes, createCipheriv, CipherKey } from "crypto";
+import { randomBytes, createCipheriv } from "crypto";
 import { dataToStream, makeWritableStream, CryptoKey } from "./utils";
 import { Readable, Writable } from "stream";
 function makeIV() {
@@ -39,8 +39,9 @@ function encryptStream(
     });
   });
 }
-async function encrypt(data: any, key: CryptoKey): Promise<Buffer> {
+async function encrypt(data: Buffer | string, key: CryptoKey): Promise<Buffer> {
   let buffers: Buffer[] = [];
+  if (typeof data === "string") data = Buffer.from(data, "base64");
   const readStream = dataToStream(data);
   const writeStream = makeWritableStream({
     onWrite: (chunk) => {
@@ -50,7 +51,10 @@ async function encrypt(data: any, key: CryptoKey): Promise<Buffer> {
   await encryptStream(readStream, writeStream, key);
   return Buffer.concat(buffers);
 }
-async function encryptToString(data: any, key: CryptoKey): Promise<string> {
+async function encryptToString(
+  data: Buffer | string,
+  key: CryptoKey
+): Promise<string> {
   const buffer = await encrypt(data, key);
   return buffer.toString("base64");
 }
