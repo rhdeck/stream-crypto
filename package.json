@@ -8,7 +8,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc ",
-    "clean": "rm -rf dest"
+    "clean": "rm -rf dest",
+    "prepublishOnly": "yarn build"
   },
   "repository": {
     "type": "git",
