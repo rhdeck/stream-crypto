@@ -16,7 +16,7 @@
     "strictNullChecks": false,
     "rootDir": "src",
     "inlineSourceMap": true,
-    "declarationDir": "dest/types",
+    "declarationDir": "dist/types",
     "esModuleInterop": true
   },
   "include": ["src/*"]
