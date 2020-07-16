@@ -1,4 +1,4 @@
-import { encrypt, encryptFile } from "./encoder";
+import { encrypt, encryptFile, encryptToString } from "./encoder";
 import { decryptToText, decryptToBuffer, decryptFile } from "./decoder";
 import { makeRandomKeyString, makeRandomKeyBuffer } from "./utils";
 export {
@@ -9,4 +9,5 @@ export {
   decryptFile,
   makeRandomKeyBuffer,
   makeRandomKeyString,
+  encryptToString,
 };

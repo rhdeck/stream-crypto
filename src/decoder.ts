@@ -1,12 +1,13 @@
 import { createReadStream, createWriteStream } from "fs";
-import { createDecipheriv, Decipher, CipherKey } from "crypto";
+import { createDecipheriv, Decipher } from "crypto";
 import { Readable, Writable } from "stream";
-import { dataToStream, makeWritableStream } from "./utils";
+import { dataToStream, makeWritableStream, CryptoKey } from "./utils";
 function decryptStream(
   readStream: Readable,
   writeStream: Writable,
-  key: CipherKey
+  key: CryptoKey
 ) {
+  if (typeof key === "string") key = Buffer.from(key, "base64");
   return new Promise((resolve, reject) => {
     const algorithm = "aes-256-ctr";
     let decipher: Decipher | undefined;
@@ -36,13 +37,14 @@ function decryptStream(
     });
   });
 }
-async function decryptFile(path: string, dest: string, key: CipherKey) {
+async function decryptFile(path: string, dest: string, key: CryptoKey) {
   const readStream = createReadStream(path);
   const writeStream = createWriteStream(dest);
   return await decryptStream(readStream, writeStream, key);
 }
-async function decryptToBuffer(data: any, key: CipherKey) {
+async function decryptToBuffer(data: Buffer | string, key: CryptoKey) {
   let buffers: Buffer[] = [];
+  if (typeof data === "string") data = Buffer.from(data, "base64");
   const readStream = dataToStream(data);
   const writeStream = makeWritableStream({
     onWrite: (chunk) => {
@@ -53,8 +55,8 @@ async function decryptToBuffer(data: any, key: CipherKey) {
   return Buffer.concat(buffers);
 }
 async function decryptToText(
-  data: any,
-  key: CipherKey,
+  data: Buffer | string,
+  key: CryptoKey,
   encoding: BufferEncoding = "utf8"
 ): Promise<string> {
   const b = await decryptToBuffer(data, key);

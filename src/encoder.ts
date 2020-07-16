@@ -1,6 +1,6 @@
 import { createReadStream, createWriteStream } from "fs";
 import { randomBytes, createCipheriv, CipherKey } from "crypto";
-import { dataToStream, makeWritableStream } from "./utils";
+import { dataToStream, makeWritableStream, CryptoKey } from "./utils";
 import { Readable, Writable } from "stream";
 function makeIV() {
   return randomBytes(16);
@@ -8,8 +8,9 @@ function makeIV() {
 function encryptStream(
   readStream: Readable,
   writeStream: Writable,
-  key: CipherKey
+  key: CryptoKey
 ): Promise<void> {
+  if (typeof key === "string") key = Buffer.from(key, "base64");
   return new Promise((resolve, reject) => {
     const iv = makeIV();
     const cipher = createCipheriv("aes-256-ctr", key, iv);
@@ -38,7 +39,7 @@ function encryptStream(
     });
   });
 }
-async function encrypt(data: any, key: CipherKey) {
+async function encrypt(data: any, key: CryptoKey): Promise<Buffer> {
   let buffers: Buffer[] = [];
   const readStream = dataToStream(data);
   const writeStream = makeWritableStream({
@@ -49,10 +50,14 @@ async function encrypt(data: any, key: CipherKey) {
   await encryptStream(readStream, writeStream, key);
   return Buffer.concat(buffers);
 }
-async function encryptFile(path: string, dest: string, key: CipherKey) {
+async function encryptToString(data: any, key: CryptoKey): Promise<string> {
+  const buffer = await encrypt(data, key);
+  return buffer.toString("base64");
+}
+async function encryptFile(path: string, dest: string, key: CryptoKey) {
   const readStream = createReadStream(path);
   const writeStream = createWriteStream(dest);
   return await encryptStream(readStream, writeStream, key);
 }
 
-export { encrypt, encryptFile };
+export { encrypt, encryptFile, encryptToString };

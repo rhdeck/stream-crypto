@@ -1,6 +1,7 @@
 import { Readable, Writable } from "stream";
 import { randomBytes } from "crypto";
 import { promisify } from "util";
+type CryptoKey = Buffer | string;
 function dataToStream(data: any) {
   const readStream = new Readable();
   readStream._read = () => {
@@ -29,4 +30,5 @@ export {
   makeWritableStream,
   makeRandomKeyString,
   makeRandomKeyBuffer,
+  CryptoKey,
 };
