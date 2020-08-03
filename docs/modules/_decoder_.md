@@ -7,6 +7,7 @@
 ### Functions
 
 * [decryptFile](_decoder_.md#decryptfile)
+* [decryptStream](_decoder_.md#decryptstream)
 * [decryptToBuffer](_decoder_.md#decrypttobuffer)
 * [decryptToString](_decoder_.md#decrypttostring)
 
@@ -16,7 +17,7 @@
 
 ▸ **decryptFile**(`path`: string, `dest`: string, `key`: [CryptoKey](_utils_.md#cryptokey)): *Promise‹unknown›*
 
-*Defined in [decoder.ts:40](https://github.com/rhdeck/stream-crypto/blob/73e7542/src/decoder.ts#L40)*
+*Defined in [decoder.ts:40](https://github.com/rhdeck/stream-crypto/blob/849eab9/src/decoder.ts#L40)*
 
 **Parameters:**
 
@@ -30,11 +31,29 @@ Name | Type |
 
 ___
 
+###  decryptStream
+
+▸ **decryptStream**(`readStream`: Readable, `writeStream`: Writable, `key`: [CryptoKey](_utils_.md#cryptokey)): *Promise‹unknown›*
+
+*Defined in [decoder.ts:5](https://github.com/rhdeck/stream-crypto/blob/849eab9/src/decoder.ts#L5)*
+
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`readStream` | Readable |
+`writeStream` | Writable |
+`key` | [CryptoKey](_utils_.md#cryptokey) |
+
+**Returns:** *Promise‹unknown›*
+
+___
+
 ###  decryptToBuffer
 
 ▸ **decryptToBuffer**(`data`: Buffer | string, `key`: [CryptoKey](_utils_.md#cryptokey)): *Promise‹Buffer‹››*
 
-*Defined in [decoder.ts:45](https://github.com/rhdeck/stream-crypto/blob/73e7542/src/decoder.ts#L45)*
+*Defined in [decoder.ts:45](https://github.com/rhdeck/stream-crypto/blob/849eab9/src/decoder.ts#L45)*
 
 **Parameters:**
 
@@ -51,7 +70,7 @@ ___
 
 ▸ **decryptToString**(`data`: Buffer | string, `key`: [CryptoKey](_utils_.md#cryptokey), `encoding`: BufferEncoding): *Promise‹string›*
 
-*Defined in [decoder.ts:57](https://github.com/rhdeck/stream-crypto/blob/73e7542/src/decoder.ts#L57)*
+*Defined in [decoder.ts:57](https://github.com/rhdeck/stream-crypto/blob/849eab9/src/decoder.ts#L57)*
 
 **Parameters:**
 

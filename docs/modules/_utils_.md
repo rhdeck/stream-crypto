@@ -21,7 +21,7 @@
 
 Ƭ **CryptoKey**: *Buffer | string*
 
-*Defined in [utils.ts:4](https://github.com/rhdeck/stream-crypto/blob/73e7542/src/utils.ts#L4)*
+*Defined in [utils.ts:4](https://github.com/rhdeck/stream-crypto/blob/849eab9/src/utils.ts#L4)*
 
 ## Functions
 
@@ -29,7 +29,7 @@
 
 ▸ **dataToStream**(`data`: any): *Readable‹›*
 
-*Defined in [utils.ts:5](https://github.com/rhdeck/stream-crypto/blob/73e7542/src/utils.ts#L5)*
+*Defined in [utils.ts:5](https://github.com/rhdeck/stream-crypto/blob/849eab9/src/utils.ts#L5)*
 
 **Parameters:**
 
@@ -45,7 +45,7 @@ ___
 
 ▸ **makeRandomKeyBuffer**(`length`: number): *Promise‹Buffer›*
 
-*Defined in [utils.ts:21](https://github.com/rhdeck/stream-crypto/blob/73e7542/src/utils.ts#L21)*
+*Defined in [utils.ts:21](https://github.com/rhdeck/stream-crypto/blob/849eab9/src/utils.ts#L21)*
 
 **Parameters:**
 
@@ -61,7 +61,7 @@ ___
 
 ▸ **makeRandomKeyString**(`length`: number): *Promise‹string›*
 
-*Defined in [utils.ts:24](https://github.com/rhdeck/stream-crypto/blob/73e7542/src/utils.ts#L24)*
+*Defined in [utils.ts:24](https://github.com/rhdeck/stream-crypto/blob/849eab9/src/utils.ts#L24)*
 
 **Parameters:**
 
@@ -77,7 +77,7 @@ ___
 
 ▸ **makeWritableStream**(`__namedParameters`: object): *Writable‹›*
 
-*Defined in [utils.ts:13](https://github.com/rhdeck/stream-crypto/blob/73e7542/src/utils.ts#L13)*
+*Defined in [utils.ts:13](https://github.com/rhdeck/stream-crypto/blob/849eab9/src/utils.ts#L13)*
 
 **Parameters:**
 
