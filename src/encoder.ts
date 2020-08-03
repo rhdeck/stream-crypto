@@ -39,10 +39,14 @@ function encryptStream(
     });
   });
 }
-async function encrypt(data: Buffer | string, key: CryptoKey): Promise<Buffer> {
+async function encryptFromBuffer(
+  bufferOrBase64String: Buffer | string,
+  key: CryptoKey
+): Promise<Buffer> {
   let buffers: Buffer[] = [];
-  if (typeof data === "string") data = Buffer.from(data, "base64");
-  const readStream = dataToStream(data);
+  if (typeof bufferOrBase64String === "string")
+    bufferOrBase64String = Buffer.from(bufferOrBase64String, "base64");
+  const readStream = dataToStream(bufferOrBase64String);
   const writeStream = makeWritableStream({
     onWrite: (chunk) => {
       buffers.push(chunk);
@@ -51,11 +55,18 @@ async function encrypt(data: Buffer | string, key: CryptoKey): Promise<Buffer> {
   await encryptStream(readStream, writeStream, key);
   return Buffer.concat(buffers);
 }
-async function encryptToString(
-  data: Buffer | string,
+async function encryptFromString(
+  utf8String: string,
+  key: CryptoKey
+): Promise<Buffer> {
+  const buffer = Buffer.from(utf8String, "utf8");
+  return encryptFromBuffer(buffer, key);
+}
+async function encryptFromBufferToString(
+  bufferOrBase64String: Buffer | string,
   key: CryptoKey
 ): Promise<string> {
-  const buffer = await encrypt(data, key);
+  const buffer = await encryptFromBuffer(bufferOrBase64String, key);
   return buffer.toString("base64");
 }
 async function encryptFile(path: string, dest: string, key: CryptoKey) {
@@ -64,4 +75,9 @@ async function encryptFile(path: string, dest: string, key: CryptoKey) {
   return await encryptStream(readStream, writeStream, key);
 }
 
-export { encrypt, encryptFile, encryptToString };
+export {
+  encryptFromString,
+  encryptFromBuffer,
+  encryptFile,
+  encryptFromBufferToString,
+};
